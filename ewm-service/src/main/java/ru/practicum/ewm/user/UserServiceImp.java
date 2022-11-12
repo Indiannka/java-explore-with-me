@@ -33,7 +33,7 @@ public class UserServiceImp  implements UserService {
     public Collection<User> getUsers(Long[] ids, int from, int size) {
         int page = from / size;
         Pageable pageable = PageRequest.of(page, size);
-        if(ids == null) {
+        if (ids == null) {
             return userRepository.findAll();
         }
         return userRepository.findAllByIdIn(Arrays.asList(ids), pageable).toList();
