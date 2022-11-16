@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS events
     views              INT,
     CONSTRAINT pk_event PRIMARY KEY (event_id),
     CONSTRAINT FK_EVENT_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES categories (category_id) ON DELETE RESTRICT,
-    CONSTRAINT FK_EVENT_ON_INITIATOR FOREIGN KEY (initiator_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    CONSTRAINT FK_EVENT_ON_INITIATOR FOREIGN KEY (initiator_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS events_compilations
