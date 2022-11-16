@@ -34,7 +34,7 @@ public class UserServiceImp  implements UserService {
         int page = from / size;
         Pageable pageable = PageRequest.of(page, size);
         if (ids == null) {
-            return userRepository.findAll();
+            return userRepository.findAll(pageable).toList();
         }
         return userRepository.findAllByIdIn(Arrays.asList(ids), pageable).toList();
     }

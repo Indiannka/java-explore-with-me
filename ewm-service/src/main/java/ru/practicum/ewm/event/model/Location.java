@@ -1,4 +1,4 @@
-package ru.practicum.ewm.user.model;
+package ru.practicum.ewm.event.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -6,31 +6,27 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
-@Table(name = "users")
 @Getter
+@Setter
 @ToString
-@Builder(toBuilder = true)
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
-public class User {
+@RequiredArgsConstructor
+@Entity
+@Table(name = "locations")
+public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "location_id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String email;
+    private Float lat;
+    private Float lon;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        User user = (User) o;
-        return id != null && Objects.equals(id, user.id);
+        Location location = (Location) o;
+        return id != null && Objects.equals(id, location.id);
     }
 
     @Override

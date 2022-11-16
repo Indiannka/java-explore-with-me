@@ -26,7 +26,7 @@ public class UserController {
     public Collection<UserDto> getUsers(@RequestParam (defaultValue = "0", required = false) @Min(0)  int from,
                                         @RequestParam (defaultValue = "10", required = false) @Min(1) int size,
                                         @RequestParam (required = false) Long[] ids) {
-        log.info("GET request: запрос пользователtq с id {}", ids);
+        log.info("GET request: запрос пользователtq с id={}", ids);
         return userService.getUsers(ids, from, size).stream()
                 .map(userConverter::convert)
                 .collect(Collectors.toList());
@@ -35,13 +35,13 @@ public class UserController {
     @PostMapping
     public UserDto create(@Validated({Create.class})
                           @RequestBody UserDto userDto) {
-        log.info("POST request: создание пользователя {}", userDto.toString());
+        log.info("POST request: создание пользователя id={}", userDto.toString());
         return userConverter.convert(userService.create(userDto));
     }
 
     @DeleteMapping("/{userId}")
     public void delete(@PathVariable("userId") long userId) {
-        log.info("DELETE request: удаление пользователя с id {}", userId);
+        log.info("DELETE request: удаление пользователя с id={}", userId);
         userService.delete(userId);
     }
 }
