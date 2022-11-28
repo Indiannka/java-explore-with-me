@@ -13,3 +13,7 @@
 - mvn clean install
 - docker-compose build
 - docker-compose up
+
+# Ссылка на PR
+
+ https://github.com/Indiannka/java-explore-with-me/pull/2
