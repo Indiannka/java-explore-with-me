@@ -19,7 +19,7 @@ public class Category {
     @Column(name = "category_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "name")
     private String name;
 
     @Override

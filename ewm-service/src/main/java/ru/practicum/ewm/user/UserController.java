@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.configs.Create;
-import ru.practicum.ewm.user.converter.UserConverter;
+import ru.practicum.ewm.user.converter.UserMapper;
 import ru.practicum.ewm.user.model.dto.UserDto;
 
 import javax.validation.constraints.Min;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
-    private final UserConverter userConverter;
+    private final UserMapper userConverter;
 
     @GetMapping
     public Collection<UserDto> getUsers(@RequestParam (defaultValue = "0", required = false) @Min(0)  int from,
@@ -28,7 +28,7 @@ public class UserController {
                                         @RequestParam (required = false) Long[] ids) {
         log.info("GET request: запрос пользователtq с id={}", ids);
         return userService.getUsers(ids, from, size).stream()
-                .map(userConverter::convert)
+                .map(userConverter::convertToDto)
                 .collect(Collectors.toList());
     }
 
@@ -36,7 +36,7 @@ public class UserController {
     public UserDto create(@Validated({Create.class})
                           @RequestBody UserDto userDto) {
         log.info("POST request: создание пользователя id={}", userDto.toString());
-        return userConverter.convert(userService.create(userDto));
+        return userConverter.convertToDto(userService.create(userDto));
     }
 
     @DeleteMapping("/{userId}")

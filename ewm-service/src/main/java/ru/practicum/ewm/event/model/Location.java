@@ -3,11 +3,11 @@ package ru.practicum.ewm.event.model;
 import lombok.*;
 
 @Getter
-@Setter
-@ToString
+@EqualsAndHashCode
+@Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class Location {
-
     private Float lat;
     private Float lon;
 }

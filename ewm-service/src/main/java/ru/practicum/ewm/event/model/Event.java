@@ -10,14 +10,13 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
 @Getter
 @Setter
 @ToString
-@Table(name = "events")
 @AllArgsConstructor
-@Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
+@Entity
+@Table(name = "events")
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +24,7 @@ public class Event {
     private Long id;
 
     @Size(min = 20, max = 2000)
+    @Column(name = "annotation")
     private String annotation;
 
     @ManyToOne
@@ -38,6 +38,7 @@ public class Event {
     private LocalDateTime createdOn;
 
     @Size(min = 20, max = 2000)
+    @Column(name = "description")
     private String description;
 
     @Column(name = "event_date")
@@ -53,6 +54,7 @@ public class Event {
     @Column(name = "lat")
     private double lat;
 
+    @Column(name = "paid")
     private boolean paid;
 
     @JoinColumn(name = "participant_limit")
@@ -65,11 +67,14 @@ public class Event {
     private boolean requestModeration;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "state")
     private State state;
 
     @Size(min = 3, max = 120)
+    @Column(name = "title")
     private String title;
 
+    @Column(name = "views")
     private Integer views;
 
     @Override

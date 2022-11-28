@@ -7,10 +7,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
-@EqualsAndHashCode
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class UserDto {
+
     private Long id;
 
     @NotBlank(message = "Поле name не должно быть пустым", groups = {Create.class})

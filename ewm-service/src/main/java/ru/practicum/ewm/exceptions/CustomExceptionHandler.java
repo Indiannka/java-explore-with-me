@@ -1,54 +1,76 @@
 package ru.practicum.ewm.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Slf4j
-@ControllerAdvice
-public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
+@RestControllerAdvice
+public class CustomExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public final ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
-        ErrorResponse error = new ErrorResponse(
-                Arrays.asList(ex.getStackTrace()),
-                ex.getLocalizedMessage(),
-                "The required object was not found.",
-                HttpStatus.NOT_FOUND.toString(),
-                LocalDateTime.now().toString());
-        log.info("ExceptionHandler: {}", ex.getLocalizedMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .reason("The required object was not found.")
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.NOT_FOUND.name())
+                .details(Arrays.asList(ex.getStackTrace()))
+                .build();
+        log.error("ExceptionHandler: Status: {}, Message: {}",error.getStatus(), error.getMessage());
+        log.debug("ExceptionHandler: StackTrace: {}",error.getDetails());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public final ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
-        ErrorResponse error = new ErrorResponse(
-                Arrays.asList(ex.getStackTrace()),
-                ex.getLocalizedMessage(),
-                "The required object was not found.",
-                HttpStatus.BAD_REQUEST.toString(),
-                LocalDateTime.now().toString());
-        log.info("ExceptionHandler: {}", ex.getLocalizedMessage());
+    @ExceptionHandler(RequestParametersException.class)
+    public final ResponseEntity<ErrorResponse> handleRequestParametersException(RequestParametersException ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .reason("For the requested operation the conditions are not met.")
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.FORBIDDEN.name())
+                .details(Arrays.asList(ex.getStackTrace()))
+                .build();
+        log.error("ExceptionHandler: Status: {}, Message: {}",error.getStatus(), error.getMessage());
+        log.debug("ExceptionHandler: StackTrace: {}",error.getDetails());
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public final ResponseEntity<ErrorResponse>  handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .reason("Required parameters are not valid")
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.BAD_REQUEST.name())
+                .details(Arrays.asList(ex.getStackTrace()))
+                .build();
+        log.error("ExceptionHandler: Status: {}, Message: {}",error.getStatus(), error.getMessage());
+        log.debug("ExceptionHandler: StackTrace: {}",error.getDetails());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({Exception.class})
-    public final ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(
-                Arrays.asList(ex.getStackTrace()),
-                ex.getLocalizedMessage(),
-                "The required object was not found.",
-                HttpStatus.INTERNAL_SERVER_ERROR.toString(),
-                LocalDateTime.now().toString());
-        log.info("ExceptionHandler: {}", ex.getLocalizedMessage());
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler({
+            org.hibernate.exception.ConstraintViolationException.class,
+            javax.validation.ConstraintViolationException.class,
+            DataIntegrityViolationException.class})
+    public final ResponseEntity<ErrorResponse>  handleConflictException(Exception ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .reason("Integrity constraint has been violated")
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.CONFLICT.name())
+                .details(Arrays.asList(ex.getStackTrace()))
+                .build();
+        log.error("ExceptionHandler: Status: {}, Message: {}",error.getStatus(), error.getMessage());
+        log.debug("ExceptionHandler: StackTrace: {}",error.getDetails());
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 }
