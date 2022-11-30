@@ -1,5 +1,6 @@
 package ru.practicum.ewm.event;
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.dto.AdminUpdateEventDto;
 import ru.practicum.ewm.event.model.dto.NewEventDto;
@@ -15,7 +16,7 @@ public interface EventService {
 
     Collection<Event> getAllAdmin(SearchParameters searchParameters);
 
-    Collection<Event> getAllByOwner(Long userId, int from, int size);
+    Collection<Event> getAllByOwner(Long userId, Pageable pageable);
 
     Event getById(Long eventId, HttpServletRequest request);
 

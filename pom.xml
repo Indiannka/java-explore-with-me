@@ -22,7 +22,13 @@
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<lombok.version>1.18.24</lombok.version>
 		<org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+		<checkstyle.version>10.3</checkstyle.version>
+		<maven.checkstyle.plugin.version>3.1.2</maven.checkstyle.plugin.version>
+		<spootbugs.maven.plugin.version>4.7.0.0</spootbugs.maven.plugin.version>
+		<maven.compiler.plugin>3.8.1</maven.compiler.plugin>
+		<jacoco.maven.plugin.version>0.8.8</jacoco.maven.plugin.version>
 	</properties>
 
 	<modules>
@@ -67,7 +73,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>3.1.2</version>
+					<version>${maven.checkstyle.plugin.version}</version>
 					<configuration>
 						<configLocation>checkstyle.xml</configLocation>
 						<suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
@@ -88,14 +94,14 @@
 						<dependency>
 							<groupId>com.puppycrawl.tools</groupId>
 							<artifactId>checkstyle</artifactId>
-							<version>10.3</version>
+							<version>${checkstyle.version}</version>
 						</dependency>
 					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>com.github.spotbugs</groupId>
 					<artifactId>spotbugs-maven-plugin</artifactId>
-					<version>4.7.0.0</version>
+					<version>${spootbugs.maven.plugin.version}</version>
 					<configuration>
 						<effort>Max</effort>
 						<threshold>High</threshold>
@@ -111,7 +117,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.1</version>
+					<version>${maven.compiler.plugin}</version>
 					<configuration>
 						<source>${java.version}</source> <!-- depending on your project -->
 						<target>${java.version}</target> <!-- depending on your project -->
@@ -130,7 +136,7 @@
 							<path>
 								<groupId>org.projectlombok</groupId>
 								<artifactId>lombok</artifactId>
-								<version>1.18.24</version>
+								<version>${lombok.version}</version>
 							</path>
 							<path>
 								<groupId>org.projectlombok</groupId>
@@ -143,7 +149,7 @@
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.8</version>
+					<version>${jacoco.maven.plugin.version}</version>
 					<configuration>
 						<output>file</output>
 					</configuration>

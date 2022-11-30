@@ -11,7 +11,7 @@ import static ru.practicum.ewm.configs.Constants.EVENT;
 
 @Component
 @RequiredArgsConstructor
-public class EntityMapper {
+public class EntityReferenceMapper {
 
     private final EventRepository eventRepository;
 

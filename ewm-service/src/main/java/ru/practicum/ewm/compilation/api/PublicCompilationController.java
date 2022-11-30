@@ -2,6 +2,7 @@ package ru.practicum.ewm.compilation.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.compilation.CompilationService;
 import ru.practicum.ewm.compilation.converter.CompilationMapper;
@@ -25,7 +26,7 @@ public class PublicCompilationController {
                                               @RequestParam (defaultValue = "0", required = false) @Min(0)  int from,
                                               @RequestParam (defaultValue = "10", required = false) @Min(1) int size) {
         log.info("GET request: запрос всех подборок");
-        return compilationService.getAll(pinned, from, size).stream()
+        return compilationService.getAll(pinned, PageRequest.of(from / size, size)).stream()
                 .map(compilationMapper::convertToDto)
                 .collect(Collectors.toList());
     }

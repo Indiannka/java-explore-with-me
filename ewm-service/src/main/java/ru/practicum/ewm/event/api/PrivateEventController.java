@@ -2,6 +2,7 @@ package ru.practicum.ewm.event.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.configs.Create;
@@ -45,7 +46,7 @@ public class PrivateEventController {
                                                    @RequestParam (defaultValue = "10", required = false) @Min(1) int size,
                                                    @PathVariable Long userId) {
         log.info("GET request: запрос событий пользователя {}", userId);
-        return eventService.getAllByOwner(userId, from, size).stream()
+        return eventService.getAllByOwner(userId, PageRequest.of(from / size, size)).stream()
                 .map(eventMapper::convertToShortDto)
                 .collect(Collectors.toList());
     }

@@ -9,7 +9,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import ru.practicum.ewm.client.StatsClient;
 import ru.practicum.ewm.event.converter.EventMapper;
 import ru.practicum.ewm.event.model.Event;
@@ -19,8 +18,10 @@ import ru.practicum.ewm.event.model.dto.AdminUpdateEventDto;
 import ru.practicum.ewm.event.model.dto.NewEventDto;
 import ru.practicum.ewm.event.model.dto.SearchParameters;
 import ru.practicum.ewm.event.model.dto.UpdateEventRequest;
+import ru.practicum.ewm.exceptions.EventDateException;
+import ru.practicum.ewm.exceptions.EventStateException;
 import ru.practicum.ewm.exceptions.NotFoundException;
-import ru.practicum.ewm.exceptions.RequestParametersException;
+import ru.practicum.ewm.exceptions.UserAccessRightsException;
 import ru.practicum.ewm.model.EndpointHit;
 import ru.practicum.ewm.user.UserRepository;
 import ru.practicum.ewm.user.model.User;
@@ -52,7 +53,7 @@ public class EventServiceImpl implements EventService {
     public Collection<Event> search(SearchParameters params) {
         QEvent event = QEvent.event;
         BooleanBuilder predicate = new BooleanBuilder(event.state.eq(State.PUBLISHED));
-        if (!StringUtils.hasText(params.getText())) {
+        if (params.getText() != null) {
             predicate.and(event.annotation.containsIgnoreCase(params.getText()))
                     .or(event.description.containsIgnoreCase(params.getText()));
         }
@@ -158,9 +159,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<Event> getAllByOwner(Long userId, int from, int size) {
-        int page = from / size;
-        Pageable pageable = PageRequest.of(page, size);
+    public Collection<Event> getAllByOwner(Long userId, Pageable pageable) {
         return eventRepository.findAllByInitiatorId(userId, pageable).toList();
     }
 
@@ -200,7 +199,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException(EVENT,eventId));
         if (!event.getState().equals(State.PENDING)) {
-            throw new RequestParametersException("Published or cancelled events cannot be rejected");
+            throw new EventStateException(event.getState().toString());
         }
         event.setState(State.CANCELED);
         return eventRepository.save(event);
@@ -227,31 +226,31 @@ public class EventServiceImpl implements EventService {
 
     private void checkEventBeforeUpdate(Event event, Long userId) {
         if (!event.getInitiator().getId().equals(userId)) {
-            throw new RequestParametersException("Only initiator can change request parameters");
+            throw new UserAccessRightsException();
         }
         if (event.getState().equals(State.PUBLISHED)) {
-            throw new RequestParametersException("Only pending or canceled events can be changed");
+            throw new EventStateException(event.getState().toString());
         }
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new RequestParametersException("Event date must not be earlier than 2 hours after moment");
+            throw new EventDateException(2, "changing");
         }
     }
 
     private void checkEventBeforeCancel(Event event, Long userId) {
         if (!event.getInitiator().getId().equals(userId)) {
-            throw new RequestParametersException("Only initiator can change request parameters");
+            throw new UserAccessRightsException();
         }
         if (!event.getState().equals(State.PENDING)) {
-            throw new RequestParametersException("Only pending events can be cancelled");
+            throw new EventStateException(event.getState().toString());
         }
     }
 
     private void checkEventBeforePublish(Event event) {
         if (!event.getState().equals(State.PENDING)) {
-            throw new RequestParametersException("Only pending events can be published");
+            throw new EventStateException(event.getState().toString());
         }
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1).plusSeconds(30))) {
-            throw new RequestParametersException("Event date must not be earlier then 1 hour after publishing");
+            throw new EventDateException(1, "publishing");
         }
     }
 }

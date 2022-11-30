@@ -1,11 +1,13 @@
 package ru.practicum.ewm.request;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.event.EventRepository;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.State;
+import ru.practicum.ewm.exceptions.EventLimitException;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.exceptions.RequestParametersException;
 import ru.practicum.ewm.request.model.Request;
@@ -20,6 +22,7 @@ import java.util.Objects;
 
 import static ru.practicum.ewm.configs.Constants.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
@@ -51,6 +54,9 @@ public class RequestServiceImpl implements RequestService {
     public Request cancel(Long userId, Long requestId) {
         Request request = requestRepository.findByIdAndRequesterId(requestId, userId).orElseThrow(
                 () -> new NotFoundException(REQUEST,requestId));
+        if (request.getStatus().equals(Status.CONFIRMED)) {
+            decreaseConfirmedRequests(request.getEvent());
+        }
         request.setStatus(Status.CANCELED);
         return requestRepository.save(request);
     }
@@ -85,6 +91,9 @@ public class RequestServiceImpl implements RequestService {
                 () -> new NotFoundException(REQUEST, requestId));
         eventRepository.findByIdAndInitiatorId(eventId, userId).orElseThrow(
                 () -> new NotFoundException(EVENT,eventId));
+        if (request.getStatus().equals(Status.CONFIRMED)) {
+            decreaseConfirmedRequests(request.getEvent());
+        }
         request.setStatus(Status.REJECTED);
         return requestRepository.save(request);
     }
@@ -102,7 +111,7 @@ public class RequestServiceImpl implements RequestService {
             throw new RequestParametersException("Request can be made only for published events");
         }
         if (event.getParticipantLimit() > 0 && Objects.equals(event.getConfirmedRequests(), event.getParticipantLimit())) {
-            throw new RequestParametersException("The participants limit has been reached");
+            throw new EventLimitException();
         }
     }
 
@@ -120,7 +129,7 @@ public class RequestServiceImpl implements RequestService {
             throw new RequestParametersException("The request does not require confirmation");
         }
         if (event.getParticipantLimit() - event.getConfirmedRequests() == 0) {
-            throw new RequestParametersException("The participation limit has been already reached");
+            throw new EventLimitException();
         }
     }
 
@@ -128,7 +137,8 @@ public class RequestServiceImpl implements RequestService {
         int availableLimit = event.getParticipantLimit() - event.getConfirmedRequests();
         if (availableLimit == 0) {
             requestRepository.rejectRequestsWithPendingStatus(event.getId());
-            throw new RequestParametersException("The participation limit has been already reached. All pending requests were cancelled");
+            log.info("All pending requests were cancelled");
+            throw new EventLimitException();
         }
     }
 
@@ -136,5 +146,13 @@ public class RequestServiceImpl implements RequestService {
         int confirmedRequests = event.getConfirmedRequests();
         event.setConfirmedRequests(confirmedRequests + 1);
         return eventRepository.save(event);
+    }
+
+    private void decreaseConfirmedRequests(Event event) {
+        int confirmedRequests = event.getConfirmedRequests();
+        if (confirmedRequests > 0) {
+            event.setConfirmedRequests(confirmedRequests - 1);
+            eventRepository.save(event);
+        }
     }
 }

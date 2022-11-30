@@ -2,6 +2,7 @@ package ru.practicum.ewm.category;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.category.converter.CategoryMapper;
@@ -25,7 +26,7 @@ public class CategoryController {
     public Collection<CategoryDto> getAll(@RequestParam(defaultValue = "0", required = false) @Min(0)  int from,
                                           @RequestParam (defaultValue = "10", required = false) @Min(1) int size) {
         log.info("GET request: запрос всех категорий");
-        return categoryService.getAll(from, size).stream()
+        return categoryService.getAll(PageRequest.of(from / size, size)).stream()
                 .map(categoryConverter::convertToDto)
                 .collect(Collectors.toList());
     }

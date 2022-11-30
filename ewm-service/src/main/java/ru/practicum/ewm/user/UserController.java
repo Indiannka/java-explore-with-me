@@ -2,6 +2,7 @@ package ru.practicum.ewm.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.configs.Create;
@@ -27,7 +28,7 @@ public class UserController {
                                         @RequestParam (defaultValue = "10", required = false) @Min(1) int size,
                                         @RequestParam (required = false) Long[] ids) {
         log.info("GET request: запрос пользователtq с id={}", ids);
-        return userService.getUsers(ids, from, size).stream()
+        return userService.getUsers(ids, PageRequest.of(from / size, size)).stream()
                 .map(userConverter::convertToDto)
                 .collect(Collectors.toList());
     }

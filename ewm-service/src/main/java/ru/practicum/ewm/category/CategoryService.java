@@ -1,5 +1,6 @@
 package ru.practicum.ewm.category;
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.model.dto.CategoryDto;
 
@@ -7,7 +8,7 @@ import java.util.Collection;
 
 public interface CategoryService {
 
-    Collection<Category> getAll(int from, int size);
+    Collection<Category> getAll(Pageable pageable);
 
     Category getById(long categoryId);
 

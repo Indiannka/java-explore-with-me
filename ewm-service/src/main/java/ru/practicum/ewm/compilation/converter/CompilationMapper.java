@@ -4,10 +4,10 @@ import org.mapstruct.Mapper;
 import ru.practicum.ewm.compilation.model.Compilation;
 import ru.practicum.ewm.compilation.model.dto.CompilationDto;
 import ru.practicum.ewm.compilation.model.dto.NewCompilationDto;
-import ru.practicum.ewm.configs.EntityMapper;
+import ru.practicum.ewm.configs.EntityReferenceMapper;
 
 
-@Mapper(componentModel = "spring", uses = {EntityMapper.class})
+@Mapper(componentModel = "spring", uses = {EntityReferenceMapper.class})
 public interface CompilationMapper {
 
     Compilation convert(NewCompilationDto dto);

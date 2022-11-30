@@ -29,7 +29,8 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(RequestParametersException.class)
+    @ExceptionHandler({RequestParametersException.class, EventStateException.class, EventDateException.class,
+                        UserAccessRightsException.class, EventLimitException.class})
     public final ResponseEntity<ErrorResponse> handleRequestParametersException(RequestParametersException ex) {
         ErrorResponse error = ErrorResponse.builder()
                 .reason("For the requested operation the conditions are not met.")

@@ -1,6 +1,7 @@
 package ru.practicum.ewm.compilation;
 
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.ewm.compilation.model.Compilation;
 import ru.practicum.ewm.compilation.model.dto.NewCompilationDto;
 
@@ -8,7 +9,7 @@ import java.util.Collection;
 
 public interface CompilationService {
 
-    Collection<Compilation> getAll(Boolean pinned, int from, int size);
+    Collection<Compilation> getAll(Boolean pinned, Pageable pageable);
 
     Compilation getById(Long compId);
 

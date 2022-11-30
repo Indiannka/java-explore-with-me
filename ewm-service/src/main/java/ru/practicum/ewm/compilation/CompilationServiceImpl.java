@@ -1,7 +1,6 @@
 package ru.practicum.ewm.compilation;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +26,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<Compilation> getAll(Boolean pinned, int from, int size) {
-        int page = from / size;
-        Pageable pageable = PageRequest.of(page, size);
+    public Collection<Compilation> getAll(Boolean pinned, Pageable pageable) {
         return compilationRepository.findAllByPinned(pinned, pageable).toList();
     }
 

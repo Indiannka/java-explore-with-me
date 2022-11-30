@@ -22,7 +22,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Modifying
     @Query("update Request r " +
-            "set r.status = 'REJECT' " +
+            "  set r.status = 'REJECT' " +
             "where r.event.id = :eventId " +
             "      and r.status = 'PENDING'")
     void rejectRequestsWithPendingStatus(Long eventId);

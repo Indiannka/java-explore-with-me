@@ -43,8 +43,7 @@ public class StatsClient extends BaseClient {
                 "end", encode(end.format(DateTimeFormatter.ofPattern(DATE_FORMAT))),
                 "uris", uris,
                 "unique", unique);
-        ResponseEntity<Object> response = get(API_PREFIX_STATS + "?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
-        return response;
+        return get(API_PREFIX_STATS + "?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }
 
     private String encode(String text)  {
