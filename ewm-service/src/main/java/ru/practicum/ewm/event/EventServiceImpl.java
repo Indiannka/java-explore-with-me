@@ -65,7 +65,7 @@ public class EventServiceImpl implements EventService {
         }
         predicate.and(event.eventDate.goe(params.getRangeStart() != null ? params.getRangeStart() : LocalDateTime.now()));
 
-        if (params.getRangeStart() != null) {
+        if (params.getRangeEnd() != null) {
             predicate.and(event.eventDate.loe(params.getRangeEnd()));
         }
         if (params.isOnlyAvailable()) {
@@ -95,7 +95,7 @@ public class EventServiceImpl implements EventService {
         }
         predicate.and(event.eventDate.goe(params.getRangeStart() != null ? params.getRangeStart() : LocalDateTime.now()));
 
-        if (params.getRangeStart() != null) {
+        if (params.getRangeEnd() != null) {
             predicate.and(event.eventDate.loe(params.getRangeEnd()));
         }
         Pageable pageable = PageRequest.of(params.getPage(), params.getSize());

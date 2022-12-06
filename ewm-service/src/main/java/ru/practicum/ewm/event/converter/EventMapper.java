@@ -5,11 +5,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import ru.practicum.ewm.category.CategoryService;
+import ru.practicum.ewm.comment.CommentService;
+import ru.practicum.ewm.configs.EntityReferenceMapper;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.dto.*;
 import ru.practicum.ewm.user.converter.UserMapper;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class, CategoryService.class},
+@Mapper(componentModel = "spring", uses = {UserMapper.class, CategoryService.class, EntityReferenceMapper.class, CommentService.class},
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface EventMapper {
 
@@ -25,6 +27,7 @@ public interface EventMapper {
 
     @Mapping(target = "location.lon", source = "lon")
     @Mapping(target = "location.lat", source = "lat")
+    @Mapping(target = "comments", source = "id")
     EventFullDto convertToFullDto(Event event);
 
     EventShortDto convertToShortDto(Event event);

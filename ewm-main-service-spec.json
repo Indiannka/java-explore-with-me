@@ -46,7 +46,20 @@
     {
       "description": "API для работы с подборками событий",
       "name": "Admin: Подборки событий"
+    },
+    {
+      "description": "API для работы с комментариями",
+      "name": "Admin: Комментарии"
+    },
+    {
+      "description": "Закрытый API для работы с комментариями",
+      "name": "Private: Комментарии"
+    },
+    {
+      "description": "Публичный API для работы с комментариями",
+      "name": "Public: Комментарии"
     }
+
   ],
   "paths": {
     "/admin/categories": {

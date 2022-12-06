@@ -1,8 +1,9 @@
-package ru.practicum.ewm.event.model;
+package ru.practicum.ewm.configs;
 
 public enum SortBy {
-
+    CREATION_DATE("created"),
     EVENT_DATE("eventDate"),
+    USERS("author"),
     VIEWS("views");
 
     final String value;
