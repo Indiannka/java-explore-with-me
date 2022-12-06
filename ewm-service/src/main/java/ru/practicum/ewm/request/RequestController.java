@@ -15,47 +15,48 @@ import java.util.stream.Collectors;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
 public class RequestController {
 
     private final RequestMapper requestMapper;
     private final RequestService requestService;
 
-    @PostMapping("/users/{userId}/requests")
+    @PostMapping("/{userId}/requests")
     public RequestDto create(@PathVariable Long userId,
                              @RequestParam @Positive Long eventId) {
         return requestMapper.convertToDto(requestService.create(userId, eventId));
     }
 
-    @GetMapping("/users/{userId}/requests")
+    @GetMapping("/{userId}/requests")
     public Collection<RequestDto> getAll(@PathVariable Long userId) {
         return requestService.getAll(userId).stream()
                 .map(requestMapper::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    @PatchMapping("/users/{userId}/requests/{requestId}/cancel")
+    @PatchMapping("/{userId}/requests/{requestId}/cancel")
     public RequestDto cancel(@PathVariable Long userId,
                              @PathVariable Long requestId) {
         return requestMapper.convertToDto(requestService.cancel(userId, requestId));
     }
 
-    @GetMapping("/users/{userId}/events/{eventId}/requests")
+    @GetMapping("/{userId}/events/{eventId}/requests")
     public Collection<RequestDto> getRequestsByEventOwner(@PathVariable Long userId,
-                                                      @PathVariable Long eventId) {
+                                                          @PathVariable Long eventId) {
         log.info("GET request: запрос заявок на участии в событии {} пользователя {}",eventId, userId);
         return requestService.getRequestsByEventOwner(userId, eventId).stream()
                 .map(requestMapper::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    @PatchMapping("/users/{userId}/events/{eventId}/requests/{reqId}/confirm")
+    @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/confirm")
     public RequestDto confirmByEventOwner(@PathVariable Long userId,
                                           @PathVariable Long eventId,
                                           @PathVariable("reqId") Long requestId) {
         return requestMapper.convertToDto(requestService.confirmByEventOwner(userId, eventId, requestId));
     }
 
-    @PatchMapping("/users/{userId}/events/{eventId}/requests/{reqId}/reject")
+    @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/reject")
     public RequestDto cancelByEventOwner(@PathVariable Long userId,
                                          @PathVariable Long eventId,
                                          @PathVariable("reqId") Long requestId) {
