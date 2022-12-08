@@ -30,8 +30,8 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler({RequestParametersException.class, EventStateException.class, EventDateException.class,
-                        UserAccessRightsException.class, EventLimitException.class})
-    public final ResponseEntity<ErrorResponse> handleRequestParametersException(RequestParametersException ex) {
+                        UserAccessRightsException.class, EventLimitException.class, CommentAccessException.class, CommentUpdateException.class})
+    public final ResponseEntity<ErrorResponse> handleRequestParametersException(RuntimeException ex) {
         ErrorResponse error = ErrorResponse.builder()
                 .reason("For the requested operation the conditions are not met.")
                 .message(ex.getMessage())
