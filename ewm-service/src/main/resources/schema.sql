@@ -76,6 +76,7 @@ CREATE TABLE IF NOT EXISTS comments
     event_id    BIGINT                                  NOT NULL,
     author_id   BIGINT                                  NOT NULL,
     created     TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
+    edited      TIMESTAMP WITHOUT TIME ZONE,
     has_replies BOOLEAN,
     parent_id   BIGINT,
     CONSTRAINT pk_comment PRIMARY KEY (comment_id),

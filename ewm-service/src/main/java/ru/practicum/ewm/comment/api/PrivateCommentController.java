@@ -30,7 +30,7 @@ public class PrivateCommentController {
     @PatchMapping("/{userId}/comments/{commentId}")
     public CommentDto update(@PathVariable Long userId,
                              @PathVariable Long commentId,
-                             @RequestBody NewCommentDto newCommentDTO) {
+                             @Valid @RequestBody NewCommentDto newCommentDTO) {
         log.info("PATCH request: изменен комментарий id={}, новый текст: {}",commentId, newCommentDTO.getText());
         return commentMapper.convertToDto(commentService.update(newCommentDTO, commentId, userId));
     }
@@ -38,7 +38,7 @@ public class PrivateCommentController {
     @PostMapping("/{userId}/comments/{commentId}")
     public CommentDto reply(@PathVariable Long userId,
                             @PathVariable Long commentId,
-                            @RequestBody NewCommentDto newCommentDTO) {
+                            @Valid @RequestBody NewCommentDto newCommentDTO) {
         log.info("POST request: добавлен комментарий {} к существующему комментарию id={}", newCommentDTO.getText(), commentId);
         return commentMapper.convertToDto(commentService.reply(newCommentDTO, commentId, userId));
     }

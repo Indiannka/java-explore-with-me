@@ -21,6 +21,7 @@ import ru.practicum.ewm.user.UserRepository;
 import ru.practicum.ewm.user.model.User;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -103,6 +104,7 @@ public class CommentServiceImpl implements CommentService {
         if (comment.getCreated().isBefore(LocalDateTime.now().minusDays(daysLimit))) {
             throw new CommentUpdateException();
         }
+        comment.setEdited(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         return commentRepository.save(commentMapper.updateFromDto(newCommentDto, comment));
     }
 
@@ -122,7 +124,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private Comment createComment(User user, Event event, Comment comment) {
-        comment.setCreated(LocalDateTime.now());
+        comment.setCreated(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         comment.setAuthor(user);
         comment.setEvent(event);
         return comment;

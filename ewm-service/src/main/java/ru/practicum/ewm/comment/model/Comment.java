@@ -36,6 +36,9 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime created;
 
+    @Column(nullable = false)
+    private LocalDateTime edited;
+
     @Column(name = "has_replies")
     private boolean hasReplies;
 
